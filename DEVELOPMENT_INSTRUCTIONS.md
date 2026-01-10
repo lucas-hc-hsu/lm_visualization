@@ -1,16 +1,86 @@
 # Transformer 比較動畫 - 精簡開發指令
 
+## Phase 0: 專案管理基礎設施
+
+### Task 0.1: 建立專案虛擬環境
+為專案建立專屬的 Python 虛擬環境，確保依賴隔離。
+
+**指令**:
+```bash
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# 或 venv\Scripts\activate  # Windows
+```
+
+**完成條件**:
+- `venv/` 目錄存在
+- 執行 `which python` 顯示虛擬環境路徑
+- 執行 `pip list` 顯示乾淨的環境
+
+---
+
+### Task 0.2: 建立變更日誌
+建立 `CHANGELOG.md` 檔案來記錄專案的所有改動。
+
+**日誌格式要求**:
+每次記錄必須包含以下資訊：
+1. **日期時間**: ISO 8601 格式 (YYYY-MM-DD HH:MM)
+2. **變更類型**: `[新增]`, `[修改]`, `[修復]`, `[刪除]`, `[重構]`
+3. **影響範圍**: 受影響的檔案或模組
+4. **詳細描述**: 具體做了什麼改動
+5. **原因說明**: 為什麼要做這個改動
+6. **測試結果**: 改動後的驗證結果
+
+**範例格式**:
+```markdown
+## [YYYY-MM-DD HH:MM] 變更類型
+
+### 影響範圍
+- `path/to/file1.py`
+- `path/to/file2.py`
+
+### 詳細描述
+具體描述做了什麼改動...
+
+### 原因說明
+為什麼需要這個改動...
+
+### 測試結果
+- [x] 測試項目 1 通過
+- [x] 測試項目 2 通過
+```
+
+**完成條件**:
+- `CHANGELOG.md` 檔案存在
+- 包含初始化記錄
+
+---
+
 ## Phase 1: 環境與基礎元件
 
 ### Task 1.1: 專案初始化
 建立 Manim 專案結構，安裝依賴。
 
 **指令**:
-- 執行 `pip install manim`
-- 建立 `scenes/`, `components/` 目錄
-- 建立 `main.py` 入口檔案
+```bash
+# 確保在虛擬環境中
+source venv/bin/activate
 
-**完成條件**: 執行 `manim --version` 成功，目錄結構存在。
+# 安裝系統依賴（如需要）
+# sudo apt-get install libcairo2-dev pkg-config python3-dev
+
+# 安裝 manim
+pip install manim
+
+# 建立目錄結構
+mkdir -p scenes components utils
+touch main.py scenes/__init__.py components/__init__.py utils/__init__.py
+```
+
+**完成條件**:
+- 執行 `manim --version` 成功
+- 目錄結構存在
+- 在 `CHANGELOG.md` 中記錄此變更
 
 ---
 
@@ -209,6 +279,11 @@ Step 2: 新 token [?]
 
 ## 驗收標準
 
+### 專案管理
+- [ ] 虛擬環境 `venv/` 已建立且正常運作
+- [ ] `CHANGELOG.md` 存在且包含所有變更記錄
+- [ ] 每次變更都有完整的日誌記錄（日期、類型、範圍、描述、原因、測試結果）
+
 ### 技術正確性
 - [ ] Decoder-Only 架構無 Cross-Attention
 - [ ] Cross-Attention 的 Q/K/V 來源正確標示
@@ -224,3 +299,15 @@ Step 2: 新 token [?]
 ### 可執行性
 - [ ] 所有場景可獨立渲染測試
 - [ ] 完整動畫可成功渲染為 1080p 影片
+
+---
+
+## 重要提醒
+
+**每完成一個 Task 後，必須在 `CHANGELOG.md` 中記錄變更！**
+
+記錄應包含：
+1. 完成了什麼
+2. 修改了哪些檔案
+3. 遇到什麼問題及如何解決
+4. 測試驗證結果
