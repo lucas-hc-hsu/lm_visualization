@@ -7,15 +7,15 @@
 
 **指令**:
 ```bash
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# 或 venv\Scripts\activate  # Windows
+uv venv
+source .venv/bin/activate  # Linux/Mac
+# 或 .venv\Scripts\activate  # Windows
 ```
 
 **完成條件**:
-- `venv/` 目錄存在
+- `.venv/` 目錄存在
 - 執行 `which python` 顯示虛擬環境路徑
-- 執行 `pip list` 顯示乾淨的環境
+- 虛擬環境可正常啟動
 
 ---
 
@@ -64,13 +64,13 @@ source venv/bin/activate  # Linux/Mac
 **指令**:
 ```bash
 # 確保在虛擬環境中
-source venv/bin/activate
+source .venv/bin/activate
 
 # 安裝系統依賴（如需要）
 # sudo apt-get install libcairo2-dev pkg-config python3-dev
 
-# 安裝 manim
-pip install manim
+# 安裝 manim (使用 uv)
+uv pip install manim
 
 # 建立目錄結構
 mkdir -p scenes components utils
