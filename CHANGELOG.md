@@ -4,6 +4,45 @@
 
 ---
 
+## [2026-01-11 14:00] [修復] 修正架構場景視覺溢出問題並完成全面驗證
+
+### 影響範圍
+- `scenes/architecture.py` - 架構比較場景
+
+### 詳細描述
+根據三項完成條件（技術準確性、視覺品質、代碼驗證）對所有場景進行全面驗證與修復：
+
+1. **視覺溢出修復** (`scenes/architecture.py`):
+   - `EncoderDecoderArchitecture`: 將 Encoder/Decoder blocks 從 3 層減少為 2 層
+   - `DecoderOnlyArchitecture`: 將 Decoder blocks 從 4 層減少為 2 層
+   - 調整區塊尺寸：width 2.5→2.2, height 2.2→1.8
+   - 重新定位元素：DOWN * 0.5 → DOWN * 1.2
+   - 縮小字體尺寸：title 24→20, labels 16→14
+
+2. **技術準確性驗證**:
+   - 所有場景經過 HuggingFace GPT-2/T5 代碼對照驗證
+   - Cross-Attention K,V 流向正確
+   - KV Cache 機制（Prefill + Generation）正確呈現
+   - Teacher Forcing 機制正確展示
+
+3. **視覺品質檢查**:
+   - 所有元素在畫面邊界內
+   - 無文字重疊或截斷
+   - 顏色對比清晰
+
+### 驗證結果
+- [x] Phase 1: TransformerBlock & AttentionMatrix ✅
+- [x] Phase 2: Architecture scenes ✅ (已修復溢出)
+- [x] Phase 3: Training scenes ✅
+- [x] Phase 4: Inference scenes ✅
+- [x] Phase 5: Summary scenes ✅
+
+### 測試結果
+- [x] 所有 14 個場景成功渲染為 1080p60 影片
+- [x] 影片輸出: `media/videos/*/1080p60/*.mp4`
+
+---
+
 ## [2026-01-11 01:30] [修改] 新增三項完成條件至開發指令
 
 ### 影響範圍
