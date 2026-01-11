@@ -367,7 +367,13 @@ Step 2: 新 token [?]
 
 ### 核心驗收方法（必須遵守）
 
-**每個 Task 的完成條件**：透過分析影片（或者影片中的 frames）來 **非常嚴格地** 檢查渲染的影片真的呈現了語言模型的運作機制。只要有些微的不準確存在，則要在修改代碼後重新渲染影片。
+**每個 Task 必須滿足以下三個完成條件**：
+
+---
+
+#### 條件一：技術準確性驗證（影片分析）
+
+透過分析影片（或者影片中的 frames）來 **非常嚴格地** 檢查渲染的影片真的呈現了語言模型的運作機制。只要有些微的不準確存在，則要在修改代碼後重新渲染影片。
 
 驗證步驟：
 1. 渲染影片後，必須逐幀或逐段分析影片內容
@@ -383,6 +389,84 @@ Step 2: 新 token [?]
    - 重新渲染
    - 再次驗證
 5. 只有在影片 100% 準確呈現語言模型機制時，該 Task 才算完成
+
+---
+
+#### 條件二：視覺品質驗證（Visually Appealing）
+
+渲染的影片必須是 **visually appealing（視覺上吸引人）**，且 **不能有任何視覺元素超出物件邊界**。
+
+檢查項目：
+1. **無溢出（No Overflow）**：
+   - 所有文字必須完整顯示在其容器內（不能被裁切）
+   - 子元件不能超出父容器的邊界
+   - 動畫過程中元素不能移動到畫面外
+   - 箭頭和連接線不能穿越不相關的物件
+
+2. **視覺美感**：
+   - 元素間距一致且合理
+   - 顏色對比清晰、易於區分
+   - 字體大小適當、可讀性高
+   - 動畫節奏流暢，無跳幀或卡頓
+   - 整體佈局平衡、不擁擠
+
+3. **對齊與排列**：
+   - 相關元素正確對齊（水平/垂直）
+   - 矩陣格子與標籤對齊
+   - 區塊內的子層級元素置中或對齊一致
+
+若發現任何視覺問題，必須修改代碼並重新渲染。
+
+---
+
+#### 條件三：代碼驗證（Code-Based Verification）
+
+透過查閱 **實際的 Encoder-Decoder LM 和 Decoder-Only LM 原始碼** 來驗證影片內容的正確性。
+
+驗證資源：
+1. **Decoder-Only (GPT-2) 參考實現**：
+   - HuggingFace Transformers: https://github.com/huggingface/transformers/blob/main/src/transformers/models/gpt2/modeling_gpt2.py
+   - 重點驗證：
+     - Causal mask 實現（`torch.tril` 建立下三角矩陣）
+     - 只有 Self-Attention + FFN（無 Cross-Attention）
+     - KV Cache 機制
+
+2. **Encoder-Decoder (T5) 參考實現**：
+   - HuggingFace Transformers: https://github.com/huggingface/transformers/blob/main/src/transformers/models/t5/modeling_t5.py
+   - 重點驗證：
+     - Cross-Attention 中 `is_cross_attention` 標誌的使用
+     - Q 來自 decoder hidden states
+     - K, V 來自 encoder outputs (`key_value_states`)
+     - Encoder 輸出被 cache 供 Cross-Attention 使用
+
+3. **驗證步驟**：
+   - 使用 Web Search 或 Web Fetch 工具查閱最新的官方實現
+   - 比對動畫中展示的架構與實際代碼
+   - 確認：
+     - 注意力機制的資料流向與代碼一致
+     - 遮罩模式與代碼實現一致
+     - 層級結構（Self-Attention、Cross-Attention、FFN、LayerNorm）與代碼一致
+   - 若發現差異，以官方代碼為準修正動畫
+
+4. **技術細節對照**：
+
+   | 特性 | Decoder-Only (GPT-2) | Encoder-Decoder (T5) |
+   |------|---------------------|---------------------|
+   | Self-Attention | Causal (下三角 mask) | Encoder: 雙向; Decoder: Causal |
+   | Cross-Attention | ❌ 無 | ✅ Q=Decoder, K/V=Encoder |
+   | Layer Norm | Pre-LN (LayerNorm) | Pre-LN (RMSNorm) |
+   | KV Cache | 單一 cache | Encoder cache + Decoder KV cache |
+
+---
+
+### 權威參考資源
+
+驗證時可參考以下資源：
+- [HuggingFace Transformers 官方文檔](https://huggingface.co/docs/transformers)
+- [The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/)
+- [Understanding Encoder And Decoder LLMs - Sebastian Raschka](https://magazine.sebastianraschka.com/p/understanding-encoder-and-decoder)
+- [NVIDIA LLM Inference Optimization](https://developer.nvidia.com/blog/mastering-llm-techniques-inference-optimization/)
+- [Decoder-Only Transformers: The Workhorse of Generative LLMs](https://cameronrwolfe.substack.com/p/decoder-only-transformers-the-workhorse)
 
 ### 專案管理
 - [ ] 虛擬環境 `.venv/` 已建立且正常運作

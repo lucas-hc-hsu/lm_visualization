@@ -4,6 +4,45 @@
 
 ---
 
+## [2026-01-11 01:30] [修改] 新增三項完成條件至開發指令
+
+### 影響範圍
+- `DEVELOPMENT_INSTRUCTIONS.md` - 開發指令文件
+
+### 詳細描述
+重構「驗收標準」章節，將完成條件擴充為三項：
+
+1. **條件一：技術準確性驗證（影片分析）**
+   - 保留原有的影片分析驗證流程
+   - 逐幀檢查視覺化元素的技術準確性
+
+2. **條件二：視覺品質驗證（Visually Appealing）**【新增】
+   - 無溢出（No Overflow）：所有元素必須在邊界內
+   - 視覺美感：間距一致、顏色對比清晰、動畫流暢
+   - 對齊與排列：元素正確對齊
+
+3. **條件三：代碼驗證（Code-Based Verification）**【新增】
+   - 透過查閱 HuggingFace Transformers 官方實現驗證
+   - GPT-2 (Decoder-Only): `modeling_gpt2.py`
+   - T5 (Encoder-Decoder): `modeling_t5.py`
+   - 提供技術細節對照表
+
+### 新增內容
+- 權威參考資源列表（HuggingFace、The Illustrated Transformer、Sebastian Raschka 等）
+- 技術細節對照表（Self-Attention、Cross-Attention、Layer Norm、KV Cache）
+
+### 原因說明
+- 視覺品質是教學動畫的重要組成部分，溢出會影響觀看體驗
+- 代碼驗證確保動畫內容與實際模型實現一致，提高技術準確性
+- 參考權威資源可作為驗證的依據
+
+### 測試結果
+- [x] `DEVELOPMENT_INSTRUCTIONS.md` 已更新
+- [x] 三項完成條件結構清晰
+- [x] 參考資源連結有效
+
+---
+
 ## [2026-01-11 01:20] [驗證] 全部場景嚴格影片分析驗證完成
 
 ### 影響範圍
